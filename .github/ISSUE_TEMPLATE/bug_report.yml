@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a problem so it can be fixed
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a report. **Never paste real secrets.**
+        Redact API tokens, passwords, hostnames, and IPs. For security
+        vulnerabilities, use the Security tab → *Report a vulnerability* instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, including what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to …
+        2. Tap …
+        3. See …
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Platform & OS version
+      placeholder: "iPhone 17 Pro Max, iOS 26.5 / macOS 26.0"
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: App version / commit
+      placeholder: "1.0.0 (123) or commit sha"
+    validations:
+      required: true
+  - type: input
+    id: proxmox
+    attributes:
+      label: Proxmox VE version (if relevant)
+      placeholder: "9.1.1"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Redact anything sensitive first.

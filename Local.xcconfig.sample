@@ -1,0 +1,8 @@
+// Copy this file to `Local.xcconfig` (gitignored) and fill in your own values to
+// build/run on a physical device. Find your Team ID in Xcode → Settings → Accounts,
+// or via: security find-identity -v -p codesigning  (the value in parentheses).
+//
+// APP_BUNDLE_ID drives the app's bundle id and the widget's ($(APP_BUNDLE_ID).widget).
+
+DEVELOPMENT_TEAM = ABCDE12345
+APP_BUNDLE_ID = com.yourname.homelabmonitor

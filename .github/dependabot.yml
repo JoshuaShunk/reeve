@@ -1,0 +1,18 @@
+version: 2
+updates:
+  # Swift package dependencies (Citadel, SwiftTerm, and their transitive deps),
+  # declared in the local ReeveCore package.
+  - package-ecosystem: "swift"
+    directory: "/Packages/ReeveCore"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      swift-dependencies:
+        patterns: ["*"]
+
+  # Keep GitHub Actions in the CI workflow up to date.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

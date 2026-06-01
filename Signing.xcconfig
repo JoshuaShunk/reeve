@@ -1,0 +1,11 @@
+// Base signing configuration (committed, generic).
+//
+// To build on a device, copy Local.xcconfig.sample to Local.xcconfig and set your
+// DEVELOPMENT_TEAM (and optionally APP_BUNDLE_ID). Local.xcconfig is gitignored, so
+// your personal team never lands in the repo.
+
+APP_BUNDLE_ID = com.reeveapp.app
+PRODUCT_BUNDLE_IDENTIFIER = $(APP_BUNDLE_ID)
+
+// Personal overrides (optional, gitignored).
+#include? "Local.xcconfig"
