@@ -64,11 +64,14 @@ final class SpeechDictation {
         transcript = ""
         state = .listening
         task = recognizer.recognitionTask(with: request) { @Sendable [weak self] result, error in
-            if let text = result?.bestTranscription.formattedString {
-                Task { @MainActor in self?.transcript = text }
-            }
-            if error != nil || (result?.isFinal ?? false) {
-                Task { @MainActor in self?.stop() }
+            // The handler is nonisolated; pull out only Sendable values, then hop to
+            // the main actor with an explicit weak capture (avoids "sending self").
+            let text = result?.bestTranscription.formattedString
+            let isDone = error != nil || (result?.isFinal ?? false)
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                if let text { self.transcript = text }
+                if isDone { self.stop() }
             }
         }
     }
