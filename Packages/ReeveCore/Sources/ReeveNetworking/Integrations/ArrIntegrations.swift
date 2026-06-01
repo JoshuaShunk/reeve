@@ -84,3 +84,16 @@ public struct ProwlarrIntegration: ServiceIntegration {
         try await ServarrStatus.fetch(apiPath: "api/v1", withQueue: false, instance: instance, secret: secret, client: client)
     }
 }
+
+public struct LidarrIntegration: ServiceIntegration {
+    public static let typeID = "lidarr"
+    public let displayName = "Lidarr"
+    public let category: ServiceCategory = .media
+    public let iconAsset: ServiceIcon = .symbol("music.note")
+    public let authMethod: AuthMethod = .header(name: "X-Api-Key")
+    public var configFields: [ConfigField] { [] }
+    public init() {}
+    public func fetchStatus(for instance: ServiceInstance, secret: String?, client: HTTPClient) async throws -> ServiceStatus {
+        try await ServarrStatus.fetch(apiPath: "api/v1", withQueue: true, instance: instance, secret: secret, client: client)
+    }
+}
