@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" fill="none" role="img" aria-label="Reeve, monitor, manage and automate your Proxmox homelab">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B0B0E"/>
+      <stop offset="1" stop-color="#13111B"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#8B7CF6"/>
+      <stop offset="1" stop-color="#6246EA"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.8" cy="0.15" r="0.75">
+      <stop stop-color="#6246EA" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#6246EA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="320" rx="28" fill="url(#bg)"/>
+  <rect width="1280" height="320" rx="28" fill="url(#glow)"/>
+
+  <!-- icon tile: a server rack -->
+  <g transform="translate(104,80)">
+    <rect width="160" height="160" rx="38" fill="url(#purple)"/>
+    <g fill="#FFFFFF">
+      <rect x="34" y="40" width="92" height="24" rx="8"/>
+      <circle cx="49" cy="52" r="4.5" fill="#6246EA"/>
+      <rect x="34" y="74" width="92" height="24" rx="8"/>
+      <circle cx="49" cy="86" r="4.5" fill="#6246EA"/>
+      <rect x="34" y="108" width="92" height="24" rx="8"/>
+      <circle cx="49" cy="120" r="4.5" fill="#6246EA"/>
+    </g>
+  </g>
+
+  <!-- wordmark + tagline -->
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+    <text x="312" y="168" fill="#FFFFFF" font-size="118" font-weight="800" letter-spacing="-3">Reeve</text>
+    <text x="316" y="218" fill="#A6A6B2" font-size="33" font-weight="500">Monitor, manage &amp; automate your Proxmox homelab</text>
+  </g>
+</svg>

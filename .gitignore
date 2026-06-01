@@ -1,0 +1,95 @@
+# Xcode / Swift / macOS ignores, adapted from github/gitignore (Swift, Objective-C, Global/macOS)
+
+## Xcode user settings & build artifacts
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+DerivedData/
+build/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+timeline.xctimeline
+playground.xcworkspace
+# Note: xcshareddata (shared schemes) is intentionally NOT ignored. CI needs it.
+
+## Xcode legacy (pre-Xcode 5; ignored defensively)
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+## Swift Package Manager
+.build/
+.swiftpm/xcode/package.xcworkspace/xcuserdata/
+.swiftpm/xcode/xcuserdata/
+.swiftpm/configuration/
+
+## Dependency managers not used here (ignored defensively)
+Pods/
+Carthage/Build/
+.accio/
+
+## fastlane (if/when used)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+## Personal signing. Never commit your team or bundle id; copy Local.xcconfig.sample.
+Local.xcconfig
+
+## Secrets & signing assets. Never commit these.
+Config.plist
+*.local.plist
+secrets.env
+.env
+*.p12
+*.pem
+*.key
+*.cer
+*.certSigningRequest
+*.mobileprovision
+*.provisionprofile
+
+## Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+.netrwhist
+.history/
+
+## macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+# Custom "Icon" resource-fork files (name ends in a carriage return)
+Icon?
+
+## Misc
+*.log
+*.tmp

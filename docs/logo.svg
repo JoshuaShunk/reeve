@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Reeve logo">
+  <defs>
+    <linearGradient id="p" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#8B7CF6"/>
+      <stop offset="1" stop-color="#6246EA"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#p)"/>
+  <g fill="#FFFFFF">
+    <rect x="138" y="150" width="236" height="58" rx="18"/>
+    <circle cx="172" cy="179" r="10" fill="#6246EA"/>
+    <rect x="138" y="227" width="236" height="58" rx="18"/>
+    <circle cx="172" cy="256" r="10" fill="#6246EA"/>
+    <rect x="138" y="304" width="236" height="58" rx="18"/>
+    <circle cx="172" cy="333" r="10" fill="#6246EA"/>
+  </g>
+</svg>

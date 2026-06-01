@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER).agent.*</string>
+	</array>
+	<!-- Export compliance: the app's only encryption is exempt: HTTPS/TLS to the
+	     Proxmox API, an SSH secure channel for remote administration, and standard
+	     authentication crypto (all via system or standard libraries, no proprietary
+	     algorithms). Declaring this avoids the per-submission "Missing Compliance"
+	     prompt. NOTE: because the app bundles an SSH client, confirm this matches
+	     your own export stance; a general SSH/remote-admin tool typically qualifies
+	     for the mass-market exemption (ECCN 5D992) but may then warrant an annual
+	     self-classification report to BIS. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+</dict>
+</plist>
