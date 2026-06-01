@@ -11,14 +11,12 @@
 	<array>
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER).agent.*</string>
 	</array>
-	<!-- Export compliance: the app's only encryption is exempt: HTTPS/TLS to the
-	     Proxmox API, an SSH secure channel for remote administration, and standard
-	     authentication crypto (all via system or standard libraries, no proprietary
-	     algorithms). Declaring this avoids the per-submission "Missing Compliance"
-	     prompt. NOTE: because the app bundles an SSH client, confirm this matches
-	     your own export stance; a general SSH/remote-admin tool typically qualifies
-	     for the mass-market exemption (ECCN 5D992) but may then warrant an annual
-	     self-classification report to BIS. -->
+	<!-- Export compliance. The app's encryption is treated as exempt: HTTPS/TLS to
+	     the Proxmox API and an SSH secure channel (Citadel) for the remote console,
+	     all using standard published algorithms with no proprietary cryptography.
+	     Declaring the exemption avoids the per-submission compliance prompt, the
+	     French ANSSI encryption declaration, and any CCATS or self-classification
+	     report, and keeps the app available worldwide including France. -->
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

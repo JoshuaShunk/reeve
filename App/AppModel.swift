@@ -30,15 +30,43 @@ final class AppModel {
 
     convenience init() {
         self.init(
+            // Route through DemoProxmoxAPI: the magic demo host gets canned data,
+            // every real server falls through to the live API.
             profiles: ProfileStore(),
-            api: LiveProxmoxAPI(),
+            api: DemoProxmoxAPI(live: LiveProxmoxAPI()),
             serviceStore: ServiceInstanceStore(),
             httpClient: LiveHTTPClient()
         )
+        // Screenshot / first-run demo: boot straight into the demo dataset.
+        if ProcessInfo.processInfo.environment["REEVE_DEMO"] == "1" {
+            profiles.seedDemoProfile()
+        }
     }
 
+    /// Whether the currently selected server is the built-in demo dataset.
+    var isDemoSelected: Bool { profiles.selectedProfile?.isDemo == true }
+
+    /// A separate, pre-seeded store backing the Services tab while in Demo Mode, so
+    /// the user's real services are never touched.
+    @ObservationIgnored private lazy var demoServiceStore: ServiceInstanceStore = {
+        let store = ServiceInstanceStore(
+            defaults: UserDefaults(suiteName: "com.reeveapp.demoservices") ?? .standard,
+            keychain: KeychainStore(service: "com.reeveapp.demoservices")
+        )
+        for instance in DemoServices.instances() {
+            try? store.save(instance, secret: nil)
+            store.cache(DemoServices.status(for: instance.typeID), for: instance.id)
+        }
+        return store
+    }()
+
+    /// The Services store to show for the current selection (demo or real).
+    var activeServiceStore: ServiceInstanceStore { isDemoSelected ? demoServiceStore : serviceStore }
+
     func makeServicesModel() -> ServicesModel {
-        ServicesModel(store: serviceStore, client: httpClient)
+        isDemoSelected
+            ? ServicesModel(catalog: .demo, store: demoServiceStore, client: httpClient)
+            : ServicesModel(store: serviceStore, client: httpClient)
     }
 
     /// Build a dashboard model for the currently selected profile, if it has a

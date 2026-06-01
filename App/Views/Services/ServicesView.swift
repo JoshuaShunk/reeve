@@ -14,7 +14,7 @@ struct ServicesRootView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if app.serviceStore.instances.isEmpty {
+                if app.activeServiceStore.instances.isEmpty {
                     ContentUnavailableView {
                         Label("No Services", systemImage: "square.grid.2x2")
                     } description: {
@@ -25,7 +25,7 @@ struct ServicesRootView: View {
                     }
                 } else {
                     List {
-                        ForEach(app.serviceStore.instances) { instance in
+                        ForEach(app.activeServiceStore.instances) { instance in
                             NavigationLink(value: instance) {
                                 ServiceRow(
                                     instance: instance,
@@ -55,7 +55,7 @@ struct ServicesRootView: View {
                 await model?.refreshAll()
                 syncServiceWidgets()
             }
-            .onChange(of: app.serviceStore.instances.count) {
+            .onChange(of: app.activeServiceStore.instances.count) {
                 WidgetSync.refreshDirectory(profiles: app.profiles, services: app.serviceStore)
                 Task { await model?.refreshAll(); syncServiceWidgets() }
             }
@@ -71,7 +71,7 @@ struct ServicesRootView: View {
     }
 
     private func deleteInstances(_ offsets: IndexSet) {
-        for index in offsets { app.serviceStore.delete(app.serviceStore.instances[index]) }
+        for index in offsets { app.activeServiceStore.delete(app.activeServiceStore.instances[index]) }
     }
 }
 
@@ -115,6 +115,8 @@ struct ServiceRow: View {
     }
 }
 
+/// Health shown by shape + color + a spoken label, never color alone, so it
+/// satisfies Differentiate Without Color and reads correctly under VoiceOver.
 struct HealthDot: View {
     let state: ServiceState
 
@@ -122,19 +124,29 @@ struct HealthDot: View {
         switch state {
         case .loading:
             ProgressView().controlSize(.small)
+                .accessibilityLabel("Checking status")
         case .failed:
-            Circle().fill(.red).frame(width: 9, height: 9)
+            StatusGlyph(level: .down, label: "Unreachable", size: 10)
         case .loaded(let status):
-            Circle().fill(color(status.health)).frame(width: 9, height: 9)
+            StatusGlyph(level: level(status.health), label: label(status.health), size: 10)
         }
     }
 
-    private func color(_ health: Health) -> Color {
+    private func level(_ health: Health) -> StatusGlyph.Level {
         switch health {
-        case .ok: .green
-        case .warn: .yellow
-        case .down: .red
-        case .unknown: .gray
+        case .ok: .ok
+        case .warn: .warn
+        case .down: .down
+        case .unknown: .neutral
+        }
+    }
+
+    private func label(_ health: Health) -> String {
+        switch health {
+        case .ok: "Healthy"
+        case .warn: "Warning"
+        case .down: "Down"
+        case .unknown: "Status unknown"
         }
     }
 }

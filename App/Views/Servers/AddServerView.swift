@@ -69,16 +69,22 @@ final class AddServerModel {
         )
     }
 
+    /// The magic demo address activates the built-in demonstration dataset and
+    /// needs no real token (see `DemoMode`).
+    var isDemoHost: Bool { DemoMode.isDemo(host: host.trimmingCharacters(in: .whitespaces)) }
+
     var hostIsValid: Bool { !host.trimmingCharacters(in: .whitespaces).isEmpty }
-    var canSave: Bool { hostIsValid && !tokenID.isEmpty && !secret.isEmpty }
+    var canSave: Bool { hostIsValid && (isDemoHost || (!tokenID.isEmpty && !secret.isEmpty)) }
 
     func test(api: ProxmoxAPI) async {
         testing = true
         defer { testing = false }
-        guard let connection = profile.connection(secret: secret) else { return }
+        guard let connection = profile.connection(secret: isDemoHost ? "demo" : secret) else { return }
         do {
             let version = try await api.version(connection)
-            testResult = "Connected. Proxmox VE \(version.version)"
+            testResult = isDemoHost
+                ? "Demo dataset ready. Proxmox VE \(version.version)"
+                : "Connected. Proxmox VE \(version.version)"
             testOK = true
         } catch {
             testResult = error.localizedDescription
@@ -88,9 +94,14 @@ final class AddServerModel {
 
     @discardableResult
     func save(into store: ProfileStore) -> Bool {
-        let profile = profile
+        // A demo profile carries a fixed token id and a dummy secret so the stored
+        // connection is non-nil (the demo API ignores both).
+        let profile = isDemoHost
+            ? ServerProfile(name: name.isEmpty ? "Demo Datacenter" : name,
+                            host: DemoMode.host, tokenID: "demo@pam!demo")
+            : profile
         do {
-            try store.save(profile, secret: secret)
+            try store.save(profile, secret: isDemoHost ? "demo" : secret)
             store.selectedID = profile.id
             return true
         } catch {
@@ -220,10 +231,13 @@ private struct DiscoverPage: View {
 /// A clean radar-style pulse used while discovering.
 private struct RadarView: View {
     var isActive: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ZStack {
-            if isActive {
+            // PulseRing already respects Reduce Motion; only show the rings when
+            // motion is allowed so nothing animates under the setting.
+            if isActive && !reduceMotion {
                 ForEach(0..<3, id: \.self) { index in
                     PulseRing(delay: Double(index) * 0.7)
                 }
@@ -234,9 +248,10 @@ private struct RadarView: View {
             Image(systemName: "antenna.radiowaves.left.and.right")
                 .font(.system(size: 34, weight: .medium))
                 .foregroundStyle(.tint)
-                .symbolEffect(.variableColor.iterative, isActive: isActive)
+                .symbolEffect(.variableColor.iterative, isActive: isActive && !reduceMotion)
         }
         .frame(width: 200, height: 200)
+        .accessibilityHidden(true)
     }
 }
 

@@ -52,9 +52,23 @@ public final class ProfileStore {
     }
 
     /// Build a ready-to-use connection for a profile, pulling its secret.
+    /// Demo profiles need no stored secret (the demo API ignores it).
     public func connection(for profile: ServerProfile) -> ServerConnection? {
+        if profile.isDemo { return profile.connection(secret: "demo") }
         guard let secret = keychain.secret(for: profile.id) else { return nil }
         return profile.connection(secret: secret)
+    }
+
+    /// Add an in-memory demo profile (not persisted) and select it. Used by the
+    /// first-run demo and by screenshot automation (`REEVE_DEMO=1`).
+    public func seedDemoProfile() {
+        if let existing = profiles.first(where: { $0.isDemo }) {
+            selectedID = existing.id
+            return
+        }
+        let demo = ServerProfile(name: "Demo Datacenter", host: DemoMode.host, tokenID: "demo@pam!demo")
+        profiles.insert(demo, at: 0)
+        selectedID = demo.id
     }
 
     // MARK: - Persistence

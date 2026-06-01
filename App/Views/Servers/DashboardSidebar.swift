@@ -10,6 +10,9 @@ import SwiftUI
 /// bar reserve a solid inset.
 struct DashboardSidebar: View {
     @Environment(AppModel.self) private var app
+    /// Collapse the KPI grid to a single column at accessibility text sizes so
+    /// labels never wrap mid-word (Larger Text criterion).
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let dashboard: DashboardModel?
     var profile: ServerProfile?
     var connectionMissing = false
@@ -51,10 +54,12 @@ struct DashboardSidebar: View {
 
         Section {
             LazyVGrid(
-                columns: [
-                    GridItem(.flexible(), spacing: Theme.Spacing.md),
-                    GridItem(.flexible(), spacing: Theme.Spacing.md),
-                ],
+                columns: dynamicTypeSize.isAccessibilitySize
+                    ? [GridItem(.flexible(), spacing: Theme.Spacing.md)]
+                    : [
+                        GridItem(.flexible(), spacing: Theme.Spacing.md),
+                        GridItem(.flexible(), spacing: Theme.Spacing.md),
+                    ],
                 spacing: Theme.Spacing.md
             ) {
                 StatTile(

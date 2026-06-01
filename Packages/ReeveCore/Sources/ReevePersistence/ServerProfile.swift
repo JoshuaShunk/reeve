@@ -39,6 +39,9 @@ public struct ServerProfile: Identifiable, Codable, Sendable, Hashable {
         return components.url
     }
 
+    /// True when this profile points at the built-in demo dataset.
+    public var isDemo: Bool { DemoMode.isDemo(host: host) }
+
     /// Combine this profile with a secret to produce a usable connection.
     public func connection(secret: String) -> ServerConnection? {
         guard let baseURL else { return nil }
