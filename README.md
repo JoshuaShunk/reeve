@@ -11,13 +11,21 @@
 
 > Bring your own server. Point Reeve at your Proxmox host with an API token, and that's it. No cloud, no account, no telemetry.
 
+<p align="center">
+  <img src="docs/demo.gif" alt="Reeve demo: dashboard, live charts, guest detail, services, and the AI agent answering a health check" width="280">
+</p>
+
 [![CI](https://github.com/joshuashunk/reeve/actions/workflows/ci.yml/badge.svg)](../../actions)
 ![Platforms](https://img.shields.io/badge/platforms-iOS%2017%20%7C%20macOS%2014-blue)
 ![Swift](https://img.shields.io/badge/Swift-6-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-active%20development-yellow)
 
-> **Status:** actively developed, not yet on the App Store. Build it from source for now (see below).
+<p align="center">
+  <a href="https://testflight.apple.com/join/VEB2Hvkc"><img src="https://img.shields.io/badge/TestFlight-Join%20the%20beta-0D96F6?logo=apple&logoColor=white" alt="Join the TestFlight beta" height="28"></a>
+</p>
+
+> **Install:** join the public beta on **[TestFlight](https://testflight.apple.com/join/VEB2Hvkc)** (iOS, iPadOS, macOS). Or build from source (see below).
 
 ## Contents
 
