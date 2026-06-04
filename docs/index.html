@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reeve — the steward for your Proxmox homelab</title>
+<meta name="description" content="Reeve is a native iOS, iPadOS, and macOS app that monitors, manages, and automates your Proxmox homelab. Live metrics, full control, and a built-in AI agent. No cloud, no account.">
+
+<meta property="og:title" content="Reeve — the steward for your Proxmox homelab">
+<meta property="og:description" content="A native iOS, iPadOS, and macOS app for your Proxmox homelab. Live metrics, full control, and a built-in AI agent. No cloud, no account.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://reeveapp.io">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/png" href="icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#08090b;
+    --fg:#f6f7f8;
+    --muted:#8a8f99;
+    --muted-2:#5e636d;
+    --line:rgba(255,255,255,.09);
+    --line-2:rgba(255,255,255,.06);
+    --accent:#7b78ff;
+    --accent-soft:rgba(123,120,255,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:"Geist","Geist Fallback",system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* ambient glow + faint texture (Linear-style) */
+  .glow{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .glow::before{
+    content:"";position:absolute;left:50%;top:-22%;transform:translateX(-50%);
+    width:1100px;height:760px;
+    background:
+      radial-gradient(50% 50% at 50% 50%, rgba(123,120,255,.22), transparent 70%),
+      radial-gradient(40% 40% at 30% 55%, rgba(56,120,220,.14), transparent 70%),
+      radial-gradient(40% 40% at 72% 45%, rgba(180,110,255,.12), transparent 70%);
+    filter:blur(8px);
+  }
+  .glow::after{
+    content:"";position:absolute;inset:0;opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* thin top hairline highlight */
+  .topline{position:fixed;top:0;left:0;right:0;height:1px;z-index:1;
+    background:linear-gradient(90deg,transparent, rgba(255,255,255,.12) 50%, transparent)}
+
+  .shell{position:relative;z-index:2;height:100vh;height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
+
+  /* ---- nav ---- */
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px clamp(22px,4vw,52px);
+  }
+  .brand{display:flex;align-items:center;gap:9px;font-weight:600;font-size:18px;letter-spacing:-.01em}
+  .mark{
+    width:26px;height:26px;border-radius:6px;flex:none;display:block;
+    box-shadow:0 0 18px rgba(80,120,230,.35);
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .nav-right{display:flex;align-items:center;gap:8px}
+  .nav-link{color:var(--muted);text-decoration:none;font-size:14px;padding:8px 12px;border-radius:8px;transition:color .15s}
+  .nav-link:hover{color:var(--fg)}
+  .nav-cta{
+    font-size:14px;font-weight:500;color:#0c0c12;text-decoration:none;
+    background:#f6f7f8;padding:8px 15px;border-radius:9px;transition:transform .12s,box-shadow .15s;
+    box-shadow:0 1px 0 rgba(255,255,255,.6) inset;
+  }
+  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px -8px rgba(255,255,255,.25)}
+
+  /* ---- hero ---- */
+  main{display:grid;place-items:center;padding:0 clamp(22px,5vw,52px);min-height:0}
+  .hero{max-width:880px;text-align:center;display:flex;flex-direction:column;align-items:center}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:13px;color:#c9cbd1;text-decoration:none;
+    border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 8px;
+    background:rgba(255,255,255,.02);backdrop-filter:blur(6px);
+    margin-bottom:clamp(20px,3.4vh,32px);transition:border-color .15s,background .15s;
+  }
+  .badge:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.04)}
+  .badge .tag{
+    font-family:"Geist Mono",monospace;font-size:11px;letter-spacing:.3px;
+    background:var(--accent-soft);color:#c8c6ff;border-radius:999px;padding:2px 8px;
+  }
+  .badge .arr{color:var(--muted)}
+
+  h1{
+    font-weight:600;letter-spacing:-.035em;line-height:.99;
+    font-size:clamp(44px,7.6vw,98px);
+    background:linear-gradient(180deg,#ffffff 30%,#aeb2bd);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:clamp(18px,2.6vh,26px);
+  }
+
+  .sub{
+    font-size:clamp(16px,1.5vw,20px);line-height:1.55;color:var(--muted);
+    max-width:60ch;margin-bottom:clamp(26px,4vh,40px);
+  }
+  .sub b{color:#d7dae0;font-weight:500}
+
+  .cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:clamp(22px,3.4vh,34px)}
+  .btn{font-size:15px;font-weight:500;text-decoration:none;padding:12px 22px;border-radius:11px;transition:transform .12s,box-shadow .15s,border-color .15s,background .15s;display:inline-flex;align-items:center;gap:8px}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-primary{background:#f6f7f8;color:#0c0c12;box-shadow:0 1px 0 rgba(255,255,255,.6) inset}
+  .btn-primary:hover{box-shadow:0 12px 30px -10px rgba(255,255,255,.3)}
+  .btn-secondary{color:var(--fg);border:1px solid var(--line);background:rgba(255,255,255,.02)}
+  .btn-secondary:hover{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.05)}
+
+  .specs{
+    display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;
+    font-family:"Geist Mono",monospace;font-size:12.5px;color:var(--muted-2);
+  }
+  .specs span{padding:0 16px;position:relative}
+  .specs span+span::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:12px;background:var(--line)}
+  .specs b{color:var(--muted);font-weight:400}
+
+  /* ---- footer ---- */
+  footer{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:18px clamp(22px,4vw,52px);
+    font-size:12.5px;color:var(--muted-2);border-top:1px solid var(--line-2);
+  }
+  footer a{color:var(--muted-2);text-decoration:none;transition:color .15s}
+  footer a:hover{color:var(--muted)}
+  footer .links{display:flex;gap:20px}
+
+  @media (max-width:680px), (max-height:560px){
+    body{overflow:auto}
+    .shell{height:auto;min-height:100dvh}
+    .nav-link.hide-sm{display:none}
+    .specs span{padding:6px 12px}
+    .specs span+span::before{display:none}
+    footer{flex-direction:column;gap:10px;text-align:center}
+  }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="topline"></div>
+
+  <div class="shell">
+    <nav>
+      <div class="brand"><img class="mark" src="icon.png" alt="Reeve app icon">Reeve</div>
+      <div class="nav-right">
+        <a class="nav-link hide-sm" href="https://github.com/JoshuaShunk/reeve">GitHub</a>
+        <a class="nav-cta" href="https://testflight.apple.com/join/VEB2Hvkc">Get the beta</a>
+      </div>
+    </nav>
+
+    <main>
+      <div class="hero">
+        <a class="badge" href="https://testflight.apple.com/join/VEB2Hvkc">
+          <span class="tag">BETA</span> Reeve 1.0 is in public TestFlight <span class="arr">&rarr;</span>
+        </a>
+
+        <h1>The steward for<br>your homelab.</h1>
+
+        <p class="sub">
+          A native app that <b>monitors, manages, and automates</b> your Proxmox homelab &mdash;
+          live metrics, full control, and a built-in <b>AI agent</b> grounded in your cluster.
+          No cloud. No account. No telemetry.
+        </p>
+
+        <div class="cta">
+          <a class="btn btn-primary" href="https://testflight.apple.com/join/VEB2Hvkc">Get the beta</a>
+          <a class="btn btn-secondary" href="https://github.com/JoshuaShunk/reeve">View on GitHub</a>
+        </div>
+
+        <div class="specs">
+          <span><b>iOS · iPadOS · macOS</b></span>
+          <span>Open source · MIT</span>
+          <span>No backend</span>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <span>© 2026 Joshua Shunk · reeveapp.io</span>
+      <span class="links">
+        <a href="https://github.com/JoshuaShunk/reeve">GitHub</a>
+        <a href="https://testflight.apple.com/join/VEB2Hvkc">TestFlight</a>
+        <a>App Store soon</a>
+      </span>
+    </footer>
+  </div>
+</body>
+</html>
