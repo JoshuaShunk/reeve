@@ -170,3 +170,15 @@ Report security concerns through a [private GitHub security advisory](https://gi
 ## License
 
 [MIT](LICENSE) © 2026 Joshua Shunk
+
+## Star History
+
+If Reeve is useful to you, a ⭐ helps others find it.
+
+<a href="https://star-history.com/#joshuashunk/reeve&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=joshuashunk/reeve&type=Date&theme=dark">
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=joshuashunk/reeve&type=Date">
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=joshuashunk/reeve&type=Date" width="640">
+  </picture>
+</a>
