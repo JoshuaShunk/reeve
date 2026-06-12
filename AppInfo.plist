@@ -11,6 +11,18 @@
 	<array>
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER).agent.*</string>
 	</array>
+	<!-- Alternate app names + pronunciation hints so Siri still recognizes the app
+	     when "Reeve" is misheard. Used automatically by every `\(.applicationName)`
+	     phrase. Max 3 entries; must not repeat the real display name. -->
+	<key>INAlternativeAppNames</key>
+	<array>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Homelab</string>
+			<key>INAlternativeAppNamePronunciationHint</key>
+			<string>home lab</string>
+		</dict>
+	</array>
 	<!-- Export compliance. The app's encryption is treated as exempt: HTTPS/TLS to
 	     the Proxmox API and an SSH secure channel (Citadel) for the remote console,
 	     all using standard published algorithms with no proprietary cryptography.

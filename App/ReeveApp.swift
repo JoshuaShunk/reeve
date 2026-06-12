@@ -1,3 +1,4 @@
+import AppIntents
 import SwiftUI
 
 @main
@@ -10,6 +11,9 @@ struct ReeveApp: App {
         // Larger shared cache so service logos (AsyncImage) stay resident and don't
         // flicker/re-fetch while scrolling the Services list.
         URLCache.shared = URLCache(memoryCapacity: 50_000_000, diskCapacity: 200_000_000)
+        // App Intents (Siri/Shortcuts/Spotlight) reach the Proxmox client through
+        // this dependency; registered here so it resolves even on a background launch.
+        AppDependencyManager.shared.add(dependency: ProxmoxIntentProvider())
         // Register the agent's continued-processing task during launch (iOS 26+),
         // so a long-running setup keeps going after the user leaves the app.
         #if os(iOS)
@@ -36,6 +40,15 @@ struct ReeveApp: App {
                 WatchConnectivityProvider.shared.start()
                 WatchConnectivityProvider.shared.sync(from: model.profiles)
                 #endif
+                // Tell Siri to re-query the guest list backing parameterized
+                // phrases (handles renamed/added/removed guests).
+                ReeveShortcuts.updateAppShortcutParameters()
+                // Refresh the Spotlight index of individual guests in the background.
+                if #available(iOS 18.0, macOS 15.0, *) {
+                    Task.detached(priority: .utility) {
+                        await GuestSpotlightIndexer.reindex()
+                    }
+                }
             }
             .onChange(of: scenePhase) { _, phase in
                 switch phase {
