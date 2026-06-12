@@ -40,14 +40,16 @@ public struct ClusterResource: Decodable, Sendable, Identifiable, Hashable {
 
     public let cpu: Double?
     public let maxcpu: Double?
-    public let mem: Int?
-    public let maxmem: Int?
-    public let disk: Int?
-    public let maxdisk: Int?
-    public let netin: Int?
-    public let netout: Int?
-    public let diskread: Int?
-    public let diskwrite: Int?
+    // Byte counts: use Int64 so they don't overflow on 32-bit watchOS (arm64_32),
+    // where `Int` is 32-bit and Proxmox's multi-GB values fail to decode.
+    public let mem: Int64?
+    public let maxmem: Int64?
+    public let disk: Int64?
+    public let maxdisk: Int64?
+    public let netin: Int64?
+    public let netout: Int64?
+    public let diskread: Int64?
+    public let diskwrite: Int64?
     public let uptime: Int?
 
     public let tags: String?

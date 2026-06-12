@@ -268,7 +268,8 @@ struct GuestDetailView: View {
                 detailRow("Cores", cores + (config.sockets.map { " × \($0) sockets" } ?? ""))
             }
             if let memory = config.memoryMB {
-                detailRow("Memory", Format.bytes(memory * 1_048_576))
+                // Int64 so the MB->bytes multiply can't overflow 32-bit Int on watchOS.
+                detailRow("Memory", Format.bytes(Int64(memory) * 1_048_576))
             }
             if let os = config.osType { detailRow("OS type", os) }
             if let boot = config.bootOrder { detailRow("Boot order", boot) }

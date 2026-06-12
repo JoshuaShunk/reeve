@@ -17,14 +17,15 @@ public struct GuestStatus: Decodable, Sendable {
     public let vmid: Int?
     public let cpu: Double?
     public let cpus: Int?
-    public let mem: Int?
-    public let maxmem: Int?
-    public let disk: Int?
-    public let maxdisk: Int?
-    public let netin: Int?
-    public let netout: Int?
-    public let diskread: Int?
-    public let diskwrite: Int?
+    // Byte counts: Int64 to avoid 32-bit overflow on watchOS (arm64_32).
+    public let mem: Int64?
+    public let maxmem: Int64?
+    public let disk: Int64?
+    public let maxdisk: Int64?
+    public let netin: Int64?
+    public let netout: Int64?
+    public let diskread: Int64?
+    public let diskwrite: Int64?
     public let uptime: Int?
     public let pid: Int?
 

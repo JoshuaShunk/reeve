@@ -3,8 +3,9 @@ import Foundation
 /// A vzdump backup volume from `…/storage/{storage}/content?content=backup`.
 public struct BackupFile: Decodable, Sendable, Identifiable, Hashable {
     public let volid: String
-    public let size: Int?
-    public let ctime: Int?
+    /// Bytes; Int64 to avoid 32-bit overflow on watchOS (arm64_32).
+    public let size: Int64?
+    public let ctime: Int64?
     public let format: String?
     public let notes: String?
     public let vmid: Int?

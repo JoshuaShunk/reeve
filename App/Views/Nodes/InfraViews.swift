@@ -2,9 +2,9 @@ import ReeveModels
 import ReevePersistence
 import SwiftUI
 
-private func sizeString(_ value: Int?) -> String {
+private func sizeString(_ value: Int64?) -> String {
     guard let value else { return "-" }
-    return ByteCountFormatter.string(fromByteCount: Int64(value), countStyle: .binary)
+    return ByteCountFormatter.string(fromByteCount: value, countStyle: .binary)
 }
 
 // MARK: - Node network

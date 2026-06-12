@@ -3,9 +3,10 @@ import Foundation
 /// Detailed node status from `GET /nodes/{node}/status`.
 public struct NodeStatus: Decodable, Sendable {
     public struct Memory: Decodable, Sendable {
-        public let total: Int
-        public let used: Int
-        public let free: Int
+        // Int64: byte counts overflow 32-bit Int on watchOS (arm64_32).
+        public let total: Int64
+        public let used: Int64
+        public let free: Int64
     }
 
     public struct CPUInfo: Decodable, Sendable {
