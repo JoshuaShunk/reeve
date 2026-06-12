@@ -90,6 +90,9 @@ Temporary Items
 # Custom "Icon" resource-fork files (name ends in a carriage return)
 Icon?
 
+## Local tooling
+.claude/
+
 ## Misc
 *.log
 *.tmp

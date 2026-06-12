@@ -32,6 +32,10 @@ struct ReeveApp: App {
                 WidgetSync.refreshDirectory(
                     profiles: model.profiles, services: model.serviceStore
                 )
+                #if os(iOS)
+                WatchConnectivityProvider.shared.start()
+                WatchConnectivityProvider.shared.sync(from: model.profiles)
+                #endif
             }
             .onChange(of: scenePhase) { _, phase in
                 switch phase {
@@ -39,6 +43,9 @@ struct ReeveApp: App {
                     lock.lockIfEnabled()
                 case .active:
                     Task { await lock.authenticate() }
+                    #if os(iOS)
+                    WatchConnectivityProvider.shared.sync(from: model.profiles)
+                    #endif
                 default:
                     break
                 }
