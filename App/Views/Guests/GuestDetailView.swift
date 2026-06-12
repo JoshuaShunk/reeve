@@ -1,3 +1,4 @@
+import AppIntents
 import Charts
 import ReeveFeatures
 import ReeveModels
@@ -66,6 +67,9 @@ struct GuestDetailView: View {
                     }
                 }
                 .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+                #if os(iOS)
+                SiriTipView(intent: StartGuestIntent())
+                #endif
                 if let model {
                     timeframePicker(model)
                     CPUChart(points: model.history)

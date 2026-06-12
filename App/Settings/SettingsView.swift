@@ -1,3 +1,4 @@
+import AppIntents
 import ReeveModels
 import SwiftUI
 
@@ -75,6 +76,17 @@ struct SettingsView: View {
                 } footer: {
                     Text("Background checks are best-effort; iOS controls how often they run. A threshold of 0% is off.")
                 }
+
+                #if os(iOS)
+                Section {
+                    SiriTipView(intent: HomelabStatusIntent())
+                    ShortcutsLink()
+                } header: {
+                    Text("Siri & Shortcuts")
+                } footer: {
+                    Text("Say things like \u{201C}Homelab status\u{201D} or \u{201C}Start [guest] in Reeve.\u{201D} Tap to add or customize phrases in the Shortcuts app.")
+                }
+                #endif
 
                 Section {
                     LabeledContent("Version", value: appVersion)

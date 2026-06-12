@@ -40,6 +40,9 @@ struct ReeveApp: App {
                 WatchConnectivityProvider.shared.start()
                 WatchConnectivityProvider.shared.sync(from: model.profiles)
                 #endif
+                // Tell Siri to re-query the guest list backing parameterized
+                // phrases (handles renamed/added/removed guests).
+                ReeveShortcuts.updateAppShortcutParameters()
                 // Refresh the Spotlight index of individual guests in the background.
                 if #available(iOS 18.0, macOS 15.0, *) {
                     Task.detached(priority: .utility) {
