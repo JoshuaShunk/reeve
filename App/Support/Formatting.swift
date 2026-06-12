@@ -9,6 +9,12 @@ enum Format {
         return ByteCountFormatter.string(fromByteCount: Int64(value), countStyle: .memory)
     }
 
+    /// Overload for the Int64 byte counts coming from Proxmox models.
+    static func bytes(_ value: Int64?) -> String {
+        guard let value else { return "-" }
+        return ByteCountFormatter.string(fromByteCount: value, countStyle: .memory)
+    }
+
     static func percent(_ fraction: Double?) -> String {
         guard let fraction else { return "-" }
         return "\(Int((fraction * 100).rounded()))%"

@@ -4,7 +4,7 @@ import Foundation
 public struct Snapshot: Decodable, Sendable, Identifiable, Hashable {
     public let name: String
     public let description: String?
-    public let snaptime: Int?
+    public let snaptime: Int64?
     public let parent: String?
     public let includesRAM: Bool
 
@@ -20,7 +20,7 @@ public struct Snapshot: Decodable, Sendable, Identifiable, Hashable {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         name = try c.decode(String.self, forKey: .name)
         description = try c.decodeIfPresent(String.self, forKey: .description)
-        snaptime = try c.decodeIfPresent(Int.self, forKey: .snaptime)
+        snaptime = try c.decodeIfPresent(Int64.self, forKey: .snaptime)
         parent = try c.decodeIfPresent(String.self, forKey: .parent)
         // `vmstate` may arrive as 0/1 or true/false depending on PVE version.
         if let intValue = try? c.decode(Int.self, forKey: .vmstate) {

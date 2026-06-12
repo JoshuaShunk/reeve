@@ -26,8 +26,8 @@ public struct StorageVolume: Decodable, Sendable, Identifiable, Hashable {
     public let volid: String
     public let content: String?
     public let format: String?
-    public let size: Int?
-    public let ctime: Int?
+    public let size: Int64?
+    public let ctime: Int64?
     public let vmid: Int?
 
     public var id: String { volid }

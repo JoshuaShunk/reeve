@@ -23,7 +23,7 @@ public enum DemoMode {
 
 extension Snapshot {
     public init(
-        name: String, description: String? = nil, snaptime: Int? = nil,
+        name: String, description: String? = nil, snaptime: Int64? = nil,
         parent: String? = nil, includesRAM: Bool = false
     ) {
         self.name = name; self.description = description; self.snaptime = snaptime
@@ -50,7 +50,7 @@ public enum DemoDataset {
     }
 
     /// GiB → bytes.
-    static func gib(_ x: Double) -> Int { Int(x * 1_073_741_824) }
+    static func gib(_ x: Double) -> Int64 { Int64(x * 1_073_741_824) }
 
     static let guests: [Guest] = [
         Guest(vmid: 100, name: "nginxproxymanager", kind: .lxc, running: true, cpu: 0.003, memUsed: 0.18, memMax: 0.5, diskMax: 8, tags: "web;proxy"),
@@ -75,8 +75,8 @@ public enum DemoDataset {
     private static func resource(
         id: String, type: ResourceType, status: RunStatus? = nil, node: String? = nil,
         name: String? = nil, vmid: Int? = nil, cpu: Double? = nil, maxcpu: Double? = nil,
-        mem: Int? = nil, maxmem: Int? = nil, disk: Int? = nil, maxdisk: Int? = nil,
-        netin: Int? = nil, netout: Int? = nil, uptime: Int? = nil, tags: String? = nil,
+        mem: Int64? = nil, maxmem: Int64? = nil, disk: Int64? = nil, maxdisk: Int64? = nil,
+        netin: Int64? = nil, netout: Int64? = nil, uptime: Int? = nil, tags: String? = nil,
         storage: String? = nil, content: String? = nil
     ) -> ClusterResource {
         ClusterResource(
@@ -137,10 +137,10 @@ public enum DemoDataset {
     }
 
     private static func series(node isNode: Bool, base: Double, amp: Double, memUsed: Double, memMax: Double) -> [RRDPoint] {
-        let now = Int(Date().timeIntervalSince1970)
+        let now = Int64(Date().timeIntervalSince1970)
         let count = 60, step = 60
         return (0..<count).map { i in
-            let t = now - (count - i) * step
+            let t = now - Int64((count - i) * step)
             let phase = Double(i)
             let wave = 0.5 + 0.5 * sin(phase / 7) * 0.6 + 0.3 * sin(phase / 2.3)
             let cpu = max(0.005, min(0.98, base + amp * wave))
@@ -170,7 +170,7 @@ public enum DemoDataset {
     }
 
     public static func snapshots() -> [Snapshot] {
-        let now = Int(Date().timeIntervalSince1970)
+        let now = Int64(Date().timeIntervalSince1970)
         return [
             Snapshot(name: "clean-install", description: "Fresh install", snaptime: now - 19 * 86400),
             Snapshot(name: "stable-2026-05", description: "Known-good before upgrade", snaptime: now - 3 * 86400, parent: "clean-install", includesRAM: true),
@@ -180,10 +180,10 @@ public enum DemoDataset {
     }
 
     public static func backups(storage: String) -> [BackupFile] {
-        let now = Int(Date().timeIntervalSince1970)
+        let now = Int64(Date().timeIntervalSince1970)
         func vol(_ id: Int, _ kind: String, _ size: Double, _ ageDays: Int, _ note: String) -> BackupFile {
             BackupFile(volid: "\(storage):backup/vzdump-\(kind)-\(id)-2026_05_\(28 - ageDays)-02_00_03.tar.zst",
-                       size: gib(size), ctime: now - ageDays * 86400, format: "tar.zst", notes: note, vmid: id)
+                       size: gib(size), ctime: now - Int64(ageDays) * 86400, format: "tar.zst", notes: note, vmid: id)
         }
         return [
             vol(102, "qemu", 2.1, 0, "home-assistant"), vol(103, "lxc", 18.4, 0, "immich"),
@@ -206,11 +206,11 @@ public enum DemoDataset {
     }
 
     public static func tasks() -> [ProxmoxTaskInfo] {
-        let now = Int(Date().timeIntervalSince1970)
+        let now = Int64(Date().timeIntervalSince1970)
         func task(_ type: String, _ worker: String, _ ago: Int, _ dur: Int, ok: Bool = true) -> ProxmoxTaskInfo {
             ProxmoxTaskInfo(upid: "UPID:\(node):0000\(ago):DEMO:\(type):\(worker):root@pam:",
                             type: type, workerID: worker, user: "root@pam",
-                            status: ok ? "OK" : "error", starttime: now - ago, endtime: now - ago + dur,
+                            status: ok ? "OK" : "error", starttime: now - Int64(ago), endtime: now - Int64(ago) + Int64(dur),
                             exitstatus: ok ? "OK" : "command failed")
         }
         return [

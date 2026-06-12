@@ -51,6 +51,44 @@ public final class ProfileStore {
         keychain.secret(for: profile.id)
     }
 
+    // MARK: - Watch sync
+
+    /// Replace the entire profile list with the set synced from another device
+    /// (iPhone -> Apple Watch), writing each secret into this device's Keychain.
+    /// Used by the watch app when it receives a `WatchSyncPayload`.
+    public func replaceAll(with payload: WatchSyncPayload) {
+        for profile in payload.profiles {
+            if let secret = payload.secrets[profile.id.uuidString], !secret.isEmpty {
+                try? keychain.setSecret(secret, for: profile.id)
+            }
+        }
+        // Drop Keychain secrets for profiles that no longer exist.
+        let keptIDs = Set(payload.profiles.map(\.id))
+        for stale in profiles where !keptIDs.contains(stale.id) {
+            try? keychain.deleteSecret(for: stale.id)
+        }
+        profiles = payload.profiles
+        selectedID = payload.selectedID ?? payload.profiles.first?.id
+        persist()
+    }
+
+    /// Build a payload of the real (non-demo) profiles plus their secrets, for
+    /// sending to the paired Apple Watch. Only profiles whose secret is present are
+    /// included: the watch can't connect without one, so syncing a secret-less
+    /// profile would make it silently vanish there (and leave a stale Keychain
+    /// entry). Excluding it also lets the watch prune any secret it no longer needs.
+    public func watchSyncPayload() -> WatchSyncPayload {
+        var included: [ServerProfile] = []
+        var secrets: [String: String] = [:]
+        for profile in profiles where !profile.isDemo {
+            guard let secret = keychain.secret(for: profile.id) else { continue }
+            included.append(profile)
+            secrets[profile.id.uuidString] = secret
+        }
+        let selected = included.contains { $0.id == selectedID } ? selectedID : included.first?.id
+        return WatchSyncPayload(profiles: included, secrets: secrets, selectedID: selected)
+    }
+
     /// Build a ready-to-use connection for a profile, pulling its secret.
     /// Demo profiles need no stored secret (the demo API ignores it).
     public func connection(for profile: ServerProfile) -> ServerConnection? {

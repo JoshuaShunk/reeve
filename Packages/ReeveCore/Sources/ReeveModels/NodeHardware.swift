@@ -23,7 +23,7 @@ public struct PhysicalDisk: Decodable, Sendable, Identifiable, Hashable {
     public let devpath: String
     public let model: String?
     public let serial: String?
-    public let size: Int?
+    public let size: Int64?         // bytes; Int64 for 32-bit watchOS safety
     public let type: String?        // "nvme" | "ssd" | "hdd"
     public let health: String?      // "PASSED" | "FAILED" | "UNKNOWN"
     public let wearout: Int?        // % life remaining (SSD/NVMe)
@@ -38,10 +38,10 @@ public struct PhysicalDisk: Decodable, Sendable, Identifiable, Hashable {
 public struct ZFSPool: Decodable, Sendable, Identifiable, Hashable {
     public let name: String
     public let health: String?
-    public let size: Int?
-    public let alloc: Int?
-    public let free: Int?
-    public let frag: Int?
+    public let size: Int64?         // bytes
+    public let alloc: Int64?        // bytes
+    public let free: Int64?         // bytes
+    public let frag: Int?           // fragmentation %
     public let dedup: Double?
 
     public var id: String { name }
@@ -57,10 +57,10 @@ public struct StorageSummary: Decodable, Sendable, Identifiable, Hashable {
     public let storage: String
     public let type: String?
     public let content: String?
-    public let total: Int?
-    public let used: Int?
-    public let avail: Int?
-    public let active: Int?
+    public let total: Int64?        // bytes
+    public let used: Int64?         // bytes
+    public let avail: Int64?        // bytes
+    public let active: Int?         // 0/1 online flag
 
     public var id: String { storage }
     public var supportsBackups: Bool { (content ?? "").contains("backup") }

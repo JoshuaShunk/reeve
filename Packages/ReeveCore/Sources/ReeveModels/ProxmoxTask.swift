@@ -20,8 +20,8 @@ public struct ProxmoxTaskInfo: Decodable, Sendable, Identifiable, Hashable {
     public let workerID: String?
     public let user: String?
     public let status: String?
-    public let starttime: Int?
-    public let endtime: Int?
+    public let starttime: Int64?
+    public let endtime: Int64?
     public let exitstatus: String?
 
     public var id: String { upid }

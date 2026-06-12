@@ -13,7 +13,8 @@ public enum RRDTimeframe: String, Sendable, CaseIterable, Identifiable {
 /// Units here differ from instantaneous status: `netin`/`netout`/`diskread`/
 /// `diskwrite` are **per-second rates**, not cumulative totals.
 public struct RRDPoint: Decodable, Sendable, Identifiable {
-    public let time: Int
+    /// Unix epoch seconds; Int64 to be safe past 2038 on 32-bit watchOS.
+    public let time: Int64
     public let cpu: Double?
     public let maxcpu: Double?
     public let mem: Double?
@@ -28,7 +29,7 @@ public struct RRDPoint: Decodable, Sendable, Identifiable {
     public let memused: Double?
     public let memtotal: Double?
 
-    public var id: Int { time }
+    public var id: Int64 { time }
     public var date: Date { Date(timeIntervalSince1970: TimeInterval(time)) }
     public var cpuPercent: Double? { cpu.map { $0 * 100 } }
     /// Used memory in bytes, whichever key this RRD source uses.
